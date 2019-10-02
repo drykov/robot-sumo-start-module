@@ -277,6 +277,8 @@ void goToSleep()
 	while(!(ADCSRA & _BV(ADIF))){}
 	ADCSRA |= _BV(ADIF);
 
+	ADCSRA &= ~_BV(ADEN); // disable ADC after measurement to stop draining power
+
 	if (ADCH > LOW_VOLTAGE)
 	{
 		setAllLeds(ON);
