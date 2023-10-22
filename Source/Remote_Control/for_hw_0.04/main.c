@@ -16,6 +16,23 @@ int main(void)
 	initIR();
 	initSW();
 	initLed();
+	
+	while (1) {
+		if (buttonPressed == STOP) {
+			do {
+				sendStop(1);
+			} while (SW_STOP);
+		} else if (buttonPressed == START) {
+			sendStart(3);
+			while(SW_START) {}
+		} else if(buttonPressed == PROG) {
+			sendProgCmd();
+			while(SW_PROG) {}
+		}
+		_delay_ms(50);
+		goToSleep();		
+	}
+	
 
 	while(1)
 	{
