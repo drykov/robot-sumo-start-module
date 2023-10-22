@@ -32,6 +32,7 @@
 void sendProgCmd();
 void sendStart(unsigned char repeats);
 void sendStop(unsigned char repeats);
+void sendBpl(unsigned char repeats, unsigned char led, unsigned char cmd);
 void goToSleep();
 
 #endif /* MAIN_H_ */

@@ -122,7 +122,11 @@ void sendProgCmd()
 {
 	const unsigned char id = readDip();
 	//Only send prog-command if valid address
-	if (id>1)
+	if(id==16)
+	{
+		sendBpl(3, 1, 1);
+	}
+	else if (id>1)
 	{
 		setLed(1,ON);
 		send_packet(RC5_ADR_PROGRAMMING,id<<1,PROGLED);
@@ -152,7 +156,11 @@ void sendProgCmd()
 void sendStart(unsigned char repeats)
 {
 	const unsigned char id = readDip();
-	if(id==1)
+	if(id==16)
+	{
+		sendBpl(repeats, 3, 3);
+	}
+	else if(id==1)
 	{
 		//Warn the user if he/she uses id 1
 		setLed(3,ON);
@@ -196,7 +204,11 @@ void sendStart(unsigned char repeats)
 void sendStop(unsigned char repeats)
 {
 	const unsigned char id = readDip();
-	if(id==1)
+	if(id==16)
+	{
+		sendBpl(repeats, 2, 2);
+	}
+	else if(id==1)
 	{
 		//Warn the user if he/she uses id 1
 		setLed(2,ON);
@@ -233,6 +245,21 @@ void sendStop(unsigned char repeats)
 
 }
 
+void sendBpl(unsigned char repeats, unsigned char led, unsigned char cmd)
+{
+	setLed(led,ON);
+	repeats++;
+	while(repeats)
+	{
+		setLed(4,ON);
+		send_packet(RC5_ADR_MODESWITCH,cmd,CMDLED);
+		setLed(4,OFF);
+		_delay_ms(REPETITION_FREQ);
+		repeats--;
+	}
+	setLed(led,OFF);	
+}
+									  
 /*
  * Prepares the remote for power-down mode (to save power)
  * Turns off more or less everything, thus drawing less than 1µA in power-down.
