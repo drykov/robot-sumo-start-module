@@ -66,6 +66,9 @@
 void delay_500() {
 	_delay_ms(500);
 }
+void delay_1000() {
+	_delay_ms(1000);
+}
 
 // Using a function and function calls takes less memory..
 void eeprom_write_byte_cli(unsigned char address, unsigned char state) {
@@ -100,8 +103,7 @@ int main() {
 			case STOPPED_SAFE:
 				PORTB = _BV(MODEPIN);
 				eeprom_write_byte_cli(E_STATE_ADDRESS, STOPPED_SAFE);
-				delay_500();
-				delay_500();
+				delay_1000();
 				currentState = STOPPED;
 				has_next = 0;
 				break;
@@ -111,11 +113,9 @@ int main() {
 				eeprom_write_byte_cli(E_STATE_ADDRESS, POWERON);
 				for (;;) {
 					LED_ON();
-					delay_500();
-					delay_500();
+					delay_1000();
 					LED_OFF();
-					delay_500();
-					delay_500();
+					delay_1000();
 				}
 				break;
 
@@ -153,15 +153,11 @@ int main() {
 					if (addr == RC5_ADR_EXPERIMENTAL) {
 						if (cmd == (stopCommand + 1)) {
 							currentState = STARTED;
-						} else if (cmd == stopCommand) {
-							currentState = STOPPED_SAFE;
 						}
 					}
 				} else {
 					if (cmd == HOME_START) {
 						currentState = STARTED;
-					} else if (cmd == HOME_STOP) {
-						currentState = STOPPED_SAFE;
 					}
 				}
 				break;
@@ -170,12 +166,12 @@ int main() {
 				if (IS_COMP_MODE) {
 					if (addr == RC5_ADR_EXPERIMENTAL) {
 						if (cmd == stopCommand) {
-							currentState = STOPPED_SAFE;
+							currentState = POWERON;
 						}
 					}
 				} else {
 					if (cmd == HOME_STOP) {
-						currentState = STOPPED_SAFE;
+						currentState = POWERON;
 					}
 				}
 				break;
